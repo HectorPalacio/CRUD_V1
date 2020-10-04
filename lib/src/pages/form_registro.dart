@@ -86,7 +86,7 @@ class FormRegistro extends StatelessWidget {
                             Navigator.pop(context);
                             Navigator.push(
                               context,
-                              CupertinoPageRoute(
+                              MaterialPageRoute(
                                 builder: (context) => ClienteDetallePage(
                                   nombre: nuevoCliente.nombre,
                                   telefono: nuevoCliente.telefono,
@@ -96,7 +96,7 @@ class FormRegistro extends StatelessWidget {
                               ),
                             );
                           } else {
-                            print('Error');
+                            print('El resp es != a longitud.length');
                           }
                         } else {
                           final nuevoCliente = ClienteModel(
@@ -119,7 +119,7 @@ class FormRegistro extends StatelessWidget {
                           Navigator.pop(context);
                           Navigator.push(
                             context,
-                            CupertinoPageRoute(
+                            MaterialPageRoute(
                               builder: (context) => ClienteDetallePage(
                                 nombre: nuevoCliente.nombre,
                                 telefono: nuevoCliente.telefono,

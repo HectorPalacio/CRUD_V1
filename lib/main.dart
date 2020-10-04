@@ -1,4 +1,3 @@
-import 'package:crud_v1/src/pages/cliente_detalle_page.dart';
 import 'package:crud_v1/src/pages/home_page.dart';
 import 'package:flutter/material.dart';
 

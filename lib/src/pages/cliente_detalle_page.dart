@@ -1,5 +1,4 @@
 import 'package:crud_v1/src/pages/form_registro.dart';
-import 'package:crud_v1/src/pages/home_page.dart';
 import 'package:crud_v1/src/providers/db_cliente.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +37,7 @@ class ClienteDetallePage extends StatelessWidget {
           )
         ],
       ),
-      body: _construirBody(),
+      body: _construirBody(context),
     );
   }
 
@@ -76,22 +75,35 @@ class ClienteDetallePage extends StatelessWidget {
     );
   }
 
-  Widget _construirBody() {
-    return Column(
+  Widget _construirBody(BuildContext context) {
+    return ListView(
       children: [
-        _CrearCircleAvatar(this.nombre),
-        Divider(),
-        _CrearAcciones(),
-        Divider(),
-        _CrearOpcionesRapidas(this.telefono),
-        Divider(),
-        _CrearCorreo(this.email),
-        Divider(),
-        _CrearEdad(this.edad),
-        Divider(),
-        Spacer(),
-        _CrearBoton(this.id, this.nombre, this.telefono, this.email, this.edad),
-        SizedBox(height: 15)
+        Stack(
+          children: [
+            Column(
+              children: [
+                _CrearCircleAvatar(this.nombre),
+                Divider(),
+                _CrearAcciones(),
+                Divider(),
+                _CrearOpcionesRapidas(this.telefono),
+                Divider(),
+                _CrearCorreo(this.email),
+                Divider(),
+                _CrearEdad(this.edad),
+                Divider(),
+                //Spacer(),
+                Container(
+                  margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.26),
+                  child: _CrearBoton(this.id, this.nombre, this.telefono,
+                      this.email, this.edad),
+                ),
+                SizedBox(height: 15),
+              ],
+            ),
+          ],
+        ),
       ],
     );
   }
