@@ -33,13 +33,46 @@ class ClienteDetallePage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.delete_forever),
             onPressed: () {
-              DBProvider.db.deleteCliente(this.id);
-              Navigator.pop(context);
+              _mostrarAlertaBorrarContacto(context);
             },
           )
         ],
       ),
       body: _construirBody(),
+    );
+  }
+
+  void _mostrarAlertaBorrarContacto(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          title: Text('Borrar cliente'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text('¿Desea borrar este cliente?'),
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            FlatButton(
+              child: Text('Borrar', style: TextStyle(color: Colors.blue)),
+              onPressed: () {
+                DBProvider.db.deleteCliente(this.id);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
     );
   }
 

@@ -46,50 +46,76 @@ class FormRegistro extends StatelessWidget {
                       style: TextStyle(color: Colors.blue),
                     ),
                     onTap: () async {
-                      // SET
-                      Provider.of<ClienteProvider>(context, listen: false)
-                          .nombre = controllerNombreText.text;
-                      Provider.of<ClienteProvider>(context, listen: false)
-                          .telefono = controllerTelefonoText.text;
-                      Provider.of<ClienteProvider>(context, listen: false)
-                          .email = controllerEmailText.text;
-                      Provider.of<ClienteProvider>(context, listen: false)
-                          .edad = int.parse(controllerEdadText.text);
-                      // GET
-                      final nuevoCliente = ClienteModel(
-                        nombre:
-                            Provider.of<ClienteProvider>(context, listen: false)
+                      //VALIDATION
+                      if (controllerNombreText.text == '' ||
+                          controllerTelefonoText.text == '' ||
+                          controllerEmailText.text == '' ||
+                          controllerEdadText.text == '') {
+                        _mostrarAlerta(context);
+                      } else {
+                        // SET
+                        Provider.of<ClienteProvider>(context, listen: false)
+                            .nombre = controllerNombreText.text;
+                        Provider.of<ClienteProvider>(context, listen: false)
+                            .telefono = controllerTelefonoText.text;
+                        Provider.of<ClienteProvider>(context, listen: false)
+                            .email = controllerEmailText.text;
+                        Provider.of<ClienteProvider>(context, listen: false)
+                            .edad = int.parse(controllerEdadText.text);
+                        // INSERT
+                        if (this.accion == 'Crear') {
+                          final nuevoCliente = ClienteModel(
+                            nombre: Provider.of<ClienteProvider>(context,
+                                    listen: false)
                                 .nombre,
-                        telefono:
-                            Provider.of<ClienteProvider>(context, listen: false)
+                            telefono: Provider.of<ClienteProvider>(context,
+                                    listen: false)
                                 .telefono,
-                        email:
-                            Provider.of<ClienteProvider>(context, listen: false)
+                            email: Provider.of<ClienteProvider>(context,
+                                    listen: false)
                                 .email,
-                        edad:
-                            Provider.of<ClienteProvider>(context, listen: false)
+                            edad: Provider.of<ClienteProvider>(context,
+                                    listen: false)
                                 .edad,
-                      );
-                      // INSERT
-                      if (this.accion == 'Crear') {
-                        final nuevoCliente = ClienteModel(
-                          nombre: Provider.of<ClienteProvider>(context,
-                                  listen: false)
-                              .nombre,
-                          telefono: Provider.of<ClienteProvider>(context,
-                                  listen: false)
-                              .telefono,
-                          email: Provider.of<ClienteProvider>(context,
-                                  listen: false)
-                              .email,
-                          edad: Provider.of<ClienteProvider>(context,
-                                  listen: false)
-                              .edad,
-                        );
-                        final int resp =
-                            await DBProvider.db.nuevoCliente(nuevoCliente);
-                        final longitud = await DBProvider.db.getTodosClientes();
-                        if (resp == longitud.length) {
+                          );
+                          final int resp =
+                              await DBProvider.db.nuevoCliente(nuevoCliente);
+                          final longitud =
+                              await DBProvider.db.getTodosClientes();
+                          if (resp == longitud.length) {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => ClienteDetallePage(
+                                  nombre: nuevoCliente.nombre,
+                                  telefono: nuevoCliente.telefono,
+                                  email: nuevoCliente.email,
+                                  edad: nuevoCliente.edad,
+                                ),
+                              ),
+                            );
+                          } else {
+                            print('Error');
+                          }
+                        } else {
+                          final nuevoCliente = ClienteModel(
+                            id: this.id,
+                            nombre: Provider.of<ClienteProvider>(context,
+                                    listen: false)
+                                .nombre,
+                            telefono: Provider.of<ClienteProvider>(context,
+                                    listen: false)
+                                .telefono,
+                            email: Provider.of<ClienteProvider>(context,
+                                    listen: false)
+                                .email,
+                            edad: Provider.of<ClienteProvider>(context,
+                                    listen: false)
+                                .edad,
+                          );
+                          await DBProvider.db.updateCliente(nuevoCliente);
+                          Navigator.pop(context);
                           Navigator.pop(context);
                           Navigator.push(
                             context,
@@ -102,39 +128,7 @@ class FormRegistro extends StatelessWidget {
                               ),
                             ),
                           );
-                        } else {
-                          print('Error');
                         }
-                      } else {
-                        final nuevoCliente = ClienteModel(
-                          id: this.id,
-                          nombre: Provider.of<ClienteProvider>(context,
-                                  listen: false)
-                              .nombre,
-                          telefono: Provider.of<ClienteProvider>(context,
-                                  listen: false)
-                              .telefono,
-                          email: Provider.of<ClienteProvider>(context,
-                                  listen: false)
-                              .email,
-                          edad: Provider.of<ClienteProvider>(context,
-                                  listen: false)
-                              .edad,
-                        );
-                        await DBProvider.db.updateCliente(nuevoCliente);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => ClienteDetallePage(
-                              nombre: nuevoCliente.nombre,
-                              telefono: nuevoCliente.telefono,
-                              email: nuevoCliente.email,
-                              edad: nuevoCliente.edad,
-                            ),
-                          ),
-                        );
                       }
                     },
                   ),
@@ -148,20 +142,54 @@ class FormRegistro extends StatelessWidget {
     );
   }
 
+  void _mostrarAlerta(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          title: Text('Error al guardar cliente'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text('Por favor, llene todos los campos'),
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'Ok',
+                style: TextStyle(color: Colors.blue),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   Widget _contruirBody(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
-      child: Column(
+      child: ListView(
+        physics: BouncingScrollPhysics(),
         children: [
-          _CrearCircleAvatar(),
-          SizedBox(height: 30),
-          _crearInputNombre(context),
-          Divider(),
-          _crearInputTelefono(context),
-          Divider(),
-          _crearInputEmail(context),
-          Divider(),
-          _crearInputEdad(context),
+          Column(
+            children: [
+              _CrearCircleAvatar(),
+              SizedBox(height: 30),
+              _crearInputNombre(context),
+              Divider(),
+              _crearInputTelefono(context),
+              Divider(),
+              _crearInputEmail(context),
+              Divider(),
+              _crearInputEdad(context),
+            ],
+          ),
         ],
       ),
     );
