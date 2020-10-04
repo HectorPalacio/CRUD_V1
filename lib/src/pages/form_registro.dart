@@ -1,9 +1,12 @@
 import 'package:crud_v1/src/bloc/cliente_provider.dart';
+import 'package:crud_v1/src/pages/cliente_detalle_page.dart';
 import 'package:crud_v1/src/providers/db_cliente.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FormRegistro extends StatelessWidget {
+  final int id;
   final String accion;
   final String nombre;
   final String telefono;
@@ -15,6 +18,7 @@ class FormRegistro extends StatelessWidget {
   final controllerEdadText = TextEditingController();
 
   FormRegistro({
+    this.id,
     @required this.accion,
     this.nombre,
     this.telefono,
@@ -41,7 +45,7 @@ class FormRegistro extends StatelessWidget {
                       'Guardar',
                       style: TextStyle(color: Colors.blue),
                     ),
-                    onTap: () {
+                    onTap: () async {
                       // SET
                       Provider.of<ClienteProvider>(context, listen: false)
                           .nombre = controllerNombreText.text;
@@ -53,6 +57,22 @@ class FormRegistro extends StatelessWidget {
                           .edad = int.parse(controllerEdadText.text);
                       // GET
                       final nuevoCliente = ClienteModel(
+                        nombre:
+                            Provider.of<ClienteProvider>(context, listen: false)
+                                .nombre,
+                        telefono:
+                            Provider.of<ClienteProvider>(context, listen: false)
+                                .telefono,
+                        email:
+                            Provider.of<ClienteProvider>(context, listen: false)
+                                .email,
+                        edad:
+                            Provider.of<ClienteProvider>(context, listen: false)
+                                .edad,
+                      );
+                      // INSERT
+                      if (this.accion == 'Crear') {
+                        final nuevoCliente = ClienteModel(
                           nombre: Provider.of<ClienteProvider>(context,
                                   listen: false)
                               .nombre,
@@ -64,13 +84,57 @@ class FormRegistro extends StatelessWidget {
                               .email,
                           edad: Provider.of<ClienteProvider>(context,
                                   listen: false)
-                              .edad);
-                      final resp = DBProvider.db.nuevoCliente(nuevoCliente);
-                      print(resp);
-                      if (resp == 0) {
-                        print('ok');
+                              .edad,
+                        );
+                        final int resp =
+                            await DBProvider.db.nuevoCliente(nuevoCliente);
+                        final longitud = await DBProvider.db.getTodosClientes();
+                        if (resp == longitud.length) {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => ClienteDetallePage(
+                                nombre: nuevoCliente.nombre,
+                                telefono: nuevoCliente.telefono,
+                                email: nuevoCliente.email,
+                                edad: nuevoCliente.edad,
+                              ),
+                            ),
+                          );
+                        } else {
+                          print('Error');
+                        }
                       } else {
-                        print('okn\'t');
+                        final nuevoCliente = ClienteModel(
+                          id: this.id,
+                          nombre: Provider.of<ClienteProvider>(context,
+                                  listen: false)
+                              .nombre,
+                          telefono: Provider.of<ClienteProvider>(context,
+                                  listen: false)
+                              .telefono,
+                          email: Provider.of<ClienteProvider>(context,
+                                  listen: false)
+                              .email,
+                          edad: Provider.of<ClienteProvider>(context,
+                                  listen: false)
+                              .edad,
+                        );
+                        await DBProvider.db.updateCliente(nuevoCliente);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => ClienteDetallePage(
+                              nombre: nuevoCliente.nombre,
+                              telefono: nuevoCliente.telefono,
+                              email: nuevoCliente.email,
+                              edad: nuevoCliente.edad,
+                            ),
+                          ),
+                        );
                       }
                     },
                   ),

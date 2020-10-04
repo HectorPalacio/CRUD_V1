@@ -50,6 +50,7 @@ class HomePage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ClienteDetallePage(
+                        id: clientes[index].id,
                         nombre: clientes[index].nombre,
                         telefono: clientes[index].telefono,
                         email: clientes[index].email,

@@ -1,13 +1,17 @@
 import 'package:crud_v1/src/pages/form_registro.dart';
+import 'package:crud_v1/src/pages/home_page.dart';
+import 'package:crud_v1/src/providers/db_cliente.dart';
 import 'package:flutter/material.dart';
 
 class ClienteDetallePage extends StatelessWidget {
+  final int id;
   final String nombre;
   final String telefono;
   final String email;
   final int edad;
 
   const ClienteDetallePage({
+    this.id,
     @required this.nombre,
     @required this.telefono,
     @required this.email,
@@ -18,10 +22,21 @@ class ClienteDetallePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back)),
         elevation: 0,
         backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
         actions: [
-          IconButton(icon: Icon(Icons.delete_forever), onPressed: () {})
+          IconButton(
+            icon: Icon(Icons.delete_forever),
+            onPressed: () {
+              DBProvider.db.deleteCliente(this.id);
+              Navigator.pop(context);
+            },
+          )
         ],
       ),
       body: _construirBody(),
@@ -42,7 +57,7 @@ class ClienteDetallePage extends StatelessWidget {
         _CrearEdad(this.edad),
         Divider(),
         Spacer(),
-        _CrearBoton(this.nombre, this.telefono, this.email, this.edad),
+        _CrearBoton(this.id, this.nombre, this.telefono, this.email, this.edad),
         SizedBox(height: 15)
       ],
     );
@@ -87,12 +102,14 @@ class _CrearCorreo extends StatelessWidget {
 }
 
 class _CrearBoton extends StatelessWidget {
+  final int id;
   final String nombre;
   final String telefono;
   final String email;
   final int edad;
 
   const _CrearBoton(
+    this.id,
     this.nombre,
     this.telefono,
     this.email,
@@ -109,6 +126,7 @@ class _CrearBoton extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => FormRegistro(
+                  id: this.id,
                   accion: 'Editar',
                   nombre: this.nombre,
                   telefono: this.telefono,
