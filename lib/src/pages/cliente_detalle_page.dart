@@ -2,6 +2,18 @@ import 'package:crud_v1/src/pages/form_registro.dart';
 import 'package:flutter/material.dart';
 
 class ClienteDetallePage extends StatelessWidget {
+  final String nombre;
+  final String telefono;
+  final String email;
+  final int edad;
+
+  const ClienteDetallePage({
+    @required this.nombre,
+    @required this.telefono,
+    @required this.email,
+    @required this.edad,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,21 +31,73 @@ class ClienteDetallePage extends StatelessWidget {
   Widget _construirBody() {
     return Column(
       children: [
-        _CrearCircleAvatar(),
+        _CrearCircleAvatar(this.nombre),
         Divider(),
         _CrearAcciones(),
         Divider(),
-        _CrearOpcionesRapidas(),
+        _CrearOpcionesRapidas(this.telefono),
+        Divider(),
+        _CrearCorreo(this.email),
+        Divider(),
+        _CrearEdad(this.edad),
         Divider(),
         Spacer(),
-        _CrearBoton(),
+        _CrearBoton(this.nombre, this.telefono, this.email, this.edad),
         SizedBox(height: 15)
       ],
     );
   }
 }
 
+class _CrearEdad extends StatelessWidget {
+  final int edad;
+
+  _CrearEdad(this.edad);
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(width: 15),
+        Icon(Icons.accessibility_new),
+        SizedBox(width: 20),
+        Text('${this.edad.toString()}' + ' años'),
+      ],
+    );
+  }
+}
+
+class _CrearCorreo extends StatelessWidget {
+  final String email;
+
+  _CrearCorreo(this.email);
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(width: 15),
+        Icon(Icons.alternate_email),
+        SizedBox(width: 20),
+        Text('${this.email}'),
+        Spacer(),
+        Icon(Icons.email, color: Colors.blue),
+        SizedBox(width: 15),
+      ],
+    );
+  }
+}
+
 class _CrearBoton extends StatelessWidget {
+  final String nombre;
+  final String telefono;
+  final String email;
+  final int edad;
+
+  const _CrearBoton(
+    this.nombre,
+    this.telefono,
+    this.email,
+    this.edad,
+  );
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -46,10 +110,10 @@ class _CrearBoton extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => FormRegistro(
                   accion: 'Editar',
-                  nombre: 'Danna',
-                  telefono: '300457',
-                  email: 'pala@gma.com',
-                  edad: 45,
+                  nombre: this.nombre,
+                  telefono: this.telefono,
+                  email: this.email,
+                  edad: this.edad,
                 ),
               ),
             );
@@ -80,6 +144,9 @@ class _CrearBoton extends StatelessWidget {
 }
 
 class _CrearOpcionesRapidas extends StatelessWidget {
+  final String telefono;
+
+  _CrearOpcionesRapidas(this.telefono);
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -92,7 +159,7 @@ class _CrearOpcionesRapidas extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('+57 300 9997777'),
+            Text('${this.telefono}'),
             Text(
               'Móvil',
               style: TextStyle(
@@ -155,6 +222,9 @@ class _CrearAcciones extends StatelessWidget {
 }
 
 class _CrearCircleAvatar extends StatelessWidget {
+  final String nombre;
+
+  _CrearCircleAvatar(this.nombre);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -166,7 +236,7 @@ class _CrearCircleAvatar extends StatelessWidget {
             maxRadius: 50,
             backgroundColor: Colors.pink[200],
             child: Text(
-              'DO',
+              '${this.nombre.substring(0, 1)}',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -179,7 +249,7 @@ class _CrearCircleAvatar extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 15),
           child: Text(
-            'Danna Ortiz',
+            '${this.nombre}',
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
         ),

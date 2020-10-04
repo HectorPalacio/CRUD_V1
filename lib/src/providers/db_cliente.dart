@@ -95,4 +95,10 @@ class DBProvider {
     final res = await db.delete('Clientes', where: 'id = ?', whereArgs: [id]);
     return res;
   }
+
+  Future<int> deleteAll() async {
+    final db = await database;
+    final res = await db.rawDelete('DELETE FROM Clientes');
+    return res;
+  }
 }

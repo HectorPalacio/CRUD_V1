@@ -42,7 +42,7 @@ class FormRegistro extends StatelessWidget {
                       style: TextStyle(color: Colors.blue),
                     ),
                     onTap: () {
-                      //SET
+                      // SET
                       Provider.of<ClienteProvider>(context, listen: false)
                           .nombre = controllerNombreText.text;
                       Provider.of<ClienteProvider>(context, listen: false)
@@ -51,10 +51,7 @@ class FormRegistro extends StatelessWidget {
                           .email = controllerEmailText.text;
                       Provider.of<ClienteProvider>(context, listen: false)
                           .edad = int.parse(controllerEdadText.text);
-                      // cliente.nombre =
-                      //     Provider.of<ClienteProvider>(context, listen: false)
-                      //         .nombre;
-                      //GET
+                      // GET
                       final nuevoCliente = ClienteModel(
                           nombre: Provider.of<ClienteProvider>(context,
                                   listen: false)
@@ -68,10 +65,13 @@ class FormRegistro extends StatelessWidget {
                           edad: Provider.of<ClienteProvider>(context,
                                   listen: false)
                               .edad);
-                      DBProvider.db.nuevoCliente(nuevoCliente);
-                      //DBProvider.db.borrarTabla();
-                      print(nuevoCliente.nombre);
-                      // print(cliente.telefono);
+                      final resp = DBProvider.db.nuevoCliente(nuevoCliente);
+                      print(resp);
+                      if (resp == 0) {
+                        print('ok');
+                      } else {
+                        print('okn\'t');
+                      }
                     },
                   ),
                 ),
