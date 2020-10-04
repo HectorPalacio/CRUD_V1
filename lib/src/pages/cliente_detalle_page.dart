@@ -44,7 +44,13 @@ class _CrearBoton extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => FormRegistro(),
+                builder: (context) => FormRegistro(
+                  accion: 'Editar',
+                  nombre: 'Danna',
+                  telefono: '300457',
+                  email: 'pala@gma.com',
+                  edad: 45,
+                ),
               ),
             );
           },

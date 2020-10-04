@@ -1,95 +1,148 @@
+import 'package:crud_v1/src/bloc/cliente_provider.dart';
+import 'package:crud_v1/src/providers/db_cliente.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class FormRegistro extends StatefulWidget {
-  @override
-  _FormRegistroState createState() => _FormRegistroState();
-}
+class FormRegistro extends StatelessWidget {
+  final String accion;
+  final String nombre;
+  final String telefono;
+  final String email;
+  final int edad;
+  final controllerNombreText = TextEditingController();
+  final controllerTelefonoText = TextEditingController();
+  final controllerEmailText = TextEditingController();
+  final controllerEdadText = TextEditingController();
 
-class _FormRegistroState extends State<FormRegistro> {
-  String id;
-  String nombre;
-  String telefono;
-  String email;
-  int edad;
-  final accion;
-
-  _FormRegistroState({@required this.accion});
+  FormRegistro({
+    @required this.accion,
+    this.nombre,
+    this.telefono,
+    this.email,
+    this.edad,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
-        title: Text('Editar/Guardar contacto'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 15, top: 20),
-            child: GestureDetector(
-              onTap: () {},
-              child: Text(
-                'Guardar',
-                style: TextStyle(color: Colors.blue),
-              ),
+    return ChangeNotifierProvider(
+      create: (context) => ClienteProvider(),
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
+              title: Text('$accion contacto'),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 15, top: 20),
+                  child: GestureDetector(
+                    child: Text(
+                      'Guardar',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    onTap: () {
+                      //SET
+                      Provider.of<ClienteProvider>(context, listen: false)
+                          .nombre = controllerNombreText.text;
+                      Provider.of<ClienteProvider>(context, listen: false)
+                          .telefono = controllerTelefonoText.text;
+                      Provider.of<ClienteProvider>(context, listen: false)
+                          .email = controllerEmailText.text;
+                      Provider.of<ClienteProvider>(context, listen: false)
+                          .edad = int.parse(controllerEdadText.text);
+                      // cliente.nombre =
+                      //     Provider.of<ClienteProvider>(context, listen: false)
+                      //         .nombre;
+                      //GET
+                      final nuevoCliente = ClienteModel(
+                          nombre: Provider.of<ClienteProvider>(context,
+                                  listen: false)
+                              .nombre,
+                          telefono: Provider.of<ClienteProvider>(context,
+                                  listen: false)
+                              .telefono,
+                          email: Provider.of<ClienteProvider>(context,
+                                  listen: false)
+                              .email,
+                          edad: Provider.of<ClienteProvider>(context,
+                                  listen: false)
+                              .edad);
+                      DBProvider.db.nuevoCliente(nuevoCliente);
+                      //DBProvider.db.borrarTabla();
+                      print(nuevoCliente.nombre);
+                      // print(cliente.telefono);
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            body: _contruirBody(context),
+          );
+        },
       ),
-      body: _contruirBody(),
     );
   }
 
-  Widget _contruirBody() {
+  Widget _contruirBody(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Column(
         children: [
           _CrearCircleAvatar(),
           SizedBox(height: 30),
-          _crearInputNombre(),
+          _crearInputNombre(context),
           Divider(),
-          _crearInputTelefono(),
+          _crearInputTelefono(context),
           Divider(),
-          _crearInputEmail(),
+          _crearInputEmail(context),
           Divider(),
-          _crearInputEdad(),
+          _crearInputEdad(context),
         ],
       ),
     );
   }
 
-  Widget _crearInputNombre() {
+  Widget _crearInputNombre(BuildContext context) {
+    if (this.nombre != null) {
+      controllerNombreText.text = this.nombre;
+    }
     return TextField(
-        //autofocus: true,
-        textCapitalization: TextCapitalization.sentences,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-          hintText: 'Nombre',
-          labelText: 'Nombre',
-          icon: Icon(Icons.person),
-        ),
-        onChanged: (value) {
-          setState(() {});
-        });
+      controller: controllerNombreText,
+      //autofocus: true,
+      textCapitalization: TextCapitalization.sentences,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+        hintText: 'Nombre',
+        labelText: 'Nombre',
+        icon: Icon(Icons.person),
+      ),
+    );
   }
 
-  Widget _crearInputTelefono() {
+  Widget _crearInputTelefono(BuildContext context) {
+    if (this.telefono != null) {
+      controllerTelefonoText.text = this.telefono;
+    }
     return TextField(
-        //autofocus: true,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-          hintText: 'Teléfono',
-          labelText: 'Teléfono',
-          icon: Icon(Icons.call),
-        ),
-        onChanged: (value) {
-          setState(() {});
-        });
+      controller: controllerTelefonoText,
+      //autofocus: true,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+        hintText: 'Teléfono',
+        labelText: 'Teléfono',
+        icon: Icon(Icons.call),
+      ),
+    );
   }
 
-  Widget _crearInputEmail() {
+  Widget _crearInputEmail(BuildContext context) {
+    if (this.email != null) {
+      controllerEmailText.text = this.email;
+    }
     return TextField(
+      controller: controllerEmailText,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -97,25 +150,24 @@ class _FormRegistroState extends State<FormRegistro> {
         labelText: 'Email',
         icon: Icon(Icons.email),
       ),
-      onChanged: (value) {
-        setState(() {});
-      },
     );
   }
 
-  Widget _crearInputEdad() {
+  Widget _crearInputEdad(BuildContext context) {
+    if (this.edad != null) {
+      controllerEdadText.text = this.edad.toString();
+    }
     return TextField(
-        //autofocus: true,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-          hintText: 'Edad',
-          labelText: 'Edad',
-          icon: Icon(Icons.border_color),
-        ),
-        onChanged: (value) {
-          setState(() {});
-        });
+      controller: controllerEdadText,
+      //autofocus: true,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+        hintText: 'Edad',
+        labelText: 'Edad',
+        icon: Icon(Icons.border_color),
+      ),
+    );
   }
 }
 
