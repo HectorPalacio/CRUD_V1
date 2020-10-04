@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   title: Text(clientes[index].nombre),
-                  subtitle: Text(clientes[index].id.toString()),
+                  //subtitle: Text(clientes[index].id.toString()),
                   onTap: () {
                     Navigator.push(
                       context,

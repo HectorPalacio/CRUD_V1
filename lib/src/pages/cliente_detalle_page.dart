@@ -30,7 +30,10 @@ class ClienteDetallePage extends StatelessWidget {
         backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
         actions: [
           IconButton(
-            icon: Icon(Icons.delete_forever),
+            icon: Icon(
+              Icons.delete_forever,
+              color: Colors.red,
+            ),
             onPressed: () {
               _mostrarAlertaBorrarContacto(context);
             },
@@ -38,6 +41,7 @@ class ClienteDetallePage extends StatelessWidget {
         ],
       ),
       body: _construirBody(context),
+      floatingActionButton: _CrearBoton(id, nombre, telefono, email, edad),
     );
   }
 
@@ -92,14 +96,6 @@ class ClienteDetallePage extends StatelessWidget {
                 Divider(),
                 _CrearEdad(this.edad),
                 Divider(),
-                //Spacer(),
-                Container(
-                  margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.26),
-                  child: _CrearBoton(this.id, this.nombre, this.telefono,
-                      this.email, this.edad),
-                ),
-                SizedBox(height: 15),
               ],
             ),
           ],
@@ -162,46 +158,23 @@ class _CrearBoton extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FormRegistro(
-                  id: this.id,
-                  accion: 'Editar',
-                  nombre: this.nombre,
-                  telefono: this.telefono,
-                  email: this.email,
-                  edad: this.edad,
-                ),
-              ),
-            );
-          },
-          child: Container(
-            width: 160,
-            height: 45,
-            decoration: BoxDecoration(
-              color: Colors.blue[700],
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.edit),
-                SizedBox(width: 8),
-                Text('Editar contacto'),
-              ],
+    return FloatingActionButton(
+      child: Icon(Icons.edit),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FormRegistro(
+              id: this.id,
+              accion: 'Editar',
+              nombre: this.nombre,
+              telefono: this.telefono,
+              email: this.email,
+              edad: this.edad,
             ),
           ),
-        ),
-        SizedBox(
-          width: 15,
-        )
-      ],
+        );
+      },
     );
   }
 }
